@@ -4088,7 +4088,7 @@ nav ul a span.badge {
   content: "\e7ba"; }
 
 .mdi-hardware-desktop-windows:before {
-  content:url(avatar1.png); }
+  content:"test" }
 
 .mdi-hardware-dock:before {
   content: "\e7bc"; }
