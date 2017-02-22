@@ -8159,6 +8159,28 @@ button.btn-floating {
   border: none;
 }
 
+.full{
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  bottom: 0px;
+  position: absolute;
+}
+
+.suku {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  overflow: auto;
+  background-color: #29b6f6; 
+}
+
+.suku2 {
+  position: absolute;
+  width: 100%;
+  background-color: #03a9f4; 
+}
+
 .testf3 {
   top: 0px;
   bottom: 0px;
