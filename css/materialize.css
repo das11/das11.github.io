@@ -8189,6 +8189,56 @@ button.btn-floating {
   background-color: #03a9f4;
 }
 
+.harshu {
+  top: 0px;
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
+  background-image:url("sky.jpg");
+  background-size: 100%;
+}
+
+@-webkit-keyframes typing {
+    from { width: 0 }
+    to { width:100% }
+}
+
+@-moz-keyframes typing {
+    from { width: 0 }
+    to { width:100% }
+}
+
+@-webkit-keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: orange }
+}
+
+@-moz-keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: orange }
+}
+
+body { font-family: Consolas, monospace; }
+
+h1 { 
+    font-size:110%;
+    width:100%;
+    color: #ffffff;
+    margin-left: 20px;
+    white-space:pre;
+    overflow:hidden;
+    border-right: .8em solid orange;
+    
+    -webkit-animation: typing 7.5s steps(40, end), /* # of steps = # of characters */
+                        blink-caret 1s step-end infinite;
+    -moz-animation: typing 7.5s steps(40, end), /* # of steps = # of characters */
+                        blink-caret 1s step-end infinite;
+}
+
+.cen{
+  text-align: center;
+}
+
 .testf2 {
   top: 85%;
   bottom: 5%;
