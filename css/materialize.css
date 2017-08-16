@@ -8218,10 +8218,8 @@ button.btn-floating {
     50% { border-color: orange }
 }
 
-
-body { font-family: Consolas, monospace; }
-
 h1 { 
+    font-family: Consolas, monospace;
     font-size:110%;
     width:100%;
     color: #ffffff;
