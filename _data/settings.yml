@@ -8,10 +8,10 @@ phone: +91 88767 21208
 address: Guwahati, Assam, India
 
 menu:
-- {name: About, link: '/about'}
+- {name: About, link: 'about'}
 - {name: Blog, link: 'blog'}
-- {name: Portfolio, link: '/portfolio/'}
-- {name: Contact, link: '/contact/'}
+- {name: Portfolio, link: 'portfolio'}
+- {name: Contact, link: 'contact'}
 
 
 #-------------------------------
