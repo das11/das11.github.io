@@ -1,0 +1,422 @@
+I"�<h3 id="prologue">Prologue</h3>
+
+<p>Customers are the driving force for the revenue in a majority of business that might pertain to mass consumerables or individualized offerings.</p>
+
+<p>But in today’s day and age leveraging Technology is a must. It’s a powerful means to identify unsatisfied customer needs that wont just boost the revenue but help outperform the competitors. Now wouldn’t that be a treat.</p>
+
+<blockquote>
+  <p>Ka-Ching $$</p>
+</blockquote>
+
+<h3 id="brief">Brief</h3>
+
+<p>The most common aspects of analyzing customer data :</p>
+
+<ul>
+  <li>Demographic information, such as gender, age, familial and marital status, income, education, and occupation.</li>
+  <li>Geographical information, which differs depending on the scope of the company. For localized businesses, this info might pertain to specific towns or counties. For larger companies, it might mean a customer’s city, state, or even country of residence.</li>
+  <li>Psychographics, such as social class, lifestyle, and personality traits.</li>
+  <li>Behavioral data, such as spending and consumption habits, product/service usage, and desired benefits.</li>
+</ul>
+
+<h3 id="pros">Pros</h3>
+
+<ul>
+  <li>Determine appropriate product pricing.</li>
+  <li>Develop customized marketing campaigns.</li>
+  <li>Design an optimal distribution strategy.</li>
+  <li>Choose specific product features for deployment.</li>
+  <li>Prioritize new product development efforts.</li>
+</ul>
+
+<h3 id="challenge">Challenge</h3>
+
+<p>We own a business dealing with a fuck ton of customers. We want to categorise and segment them so that the marketing strategy can be planned accordingly</p>
+
+<h3 id="how">How</h3>
+
+<p>We will be using something called the K-Means clustering algorithm.</p>
+
+<p>In a gist, what it does is :</p>
+
+<ul>
+  <li>Specify number of clusters K.</li>
+  <li>Initialize centroids by first shuffling the dataset and then randomly selecting K data points for the centroids without replacement.</li>
+  <li>Keep iterating until there is no change to the centroids. i.e assignment of data points to clusters isn’t changing.</li>
+</ul>
+
+<h3 id="solution">Solution</h3>
+
+<p>Without further ado, I will jump into the working and execution of the solution.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"customers.csv"</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">"CustomerID"</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CustomerID</th>
+      <th>Gender</th>
+      <th>Age</th>
+      <th>Annual Income (k$)</th>
+      <th>Spending Score (1-100)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Male</td>
+      <td>19</td>
+      <td>15</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Male</td>
+      <td>21</td>
+      <td>15</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Female</td>
+      <td>20</td>
+      <td>16</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Female</td>
+      <td>23</td>
+      <td>16</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Female</td>
+      <td>31</td>
+      <td>17</td>
+      <td>40</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>I’ve added the dependencies and the sample dataset with a few attributes.
+I have also dropped the ID column as it doesn’t really affect in this context.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Ages Frequency"</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">axes_style</span><span class="p">(</span><span class="s">"dark"</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s">"Age"</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_17_0.png" alt="png" /></p>
+
+<p>I’ve tried a simple visualization with the age groups to get a gist of where we might be headed !</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s">"red"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_19_0.png" alt="png" /></p>
+
+<p>I’ve tried making a basic visualization in the distribution ranges between Income and Spending score</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">genders</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">"darkgrid"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">genders</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">genders</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_21_0.png" alt="png" /></p>
+
+<p>And while we’re at it, try and give the “Feminists” out there something to bash on me about.
+In layman’s terms, we have tried visualizing the Gender specific spending distribution</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age18_25</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&lt;=</span> <span class="mi">25</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">)]</span>
+<span class="n">age26_35</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&lt;=</span> <span class="mi">35</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&gt;=</span> <span class="mi">26</span><span class="p">)]</span>
+<span class="n">age36_45</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&gt;=</span> <span class="mi">36</span><span class="p">)]</span>
+<span class="n">age46_55</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&lt;=</span> <span class="mi">55</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&gt;=</span> <span class="mi">46</span><span class="p">)]</span>
+<span class="n">age55above</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&gt;=</span> <span class="mi">56</span><span class="p">]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s">"18-25"</span><span class="p">,</span><span class="s">"26-35"</span><span class="p">,</span><span class="s">"36-45"</span><span class="p">,</span><span class="s">"46-55"</span><span class="p">,</span><span class="s">"55+"</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">age18_25</span><span class="o">.</span><span class="n">values</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">age26_35</span><span class="o">.</span><span class="n">values</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">age36_45</span><span class="o">.</span><span class="n">values</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">age46_55</span><span class="o">.</span><span class="n">values</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">age55above</span><span class="o">.</span><span class="n">values</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s">"rocket"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Number of Customer and Ages"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Age"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"Number of Customer"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_23_0.png" alt="png" /></p>
+
+<p>Here, we are trying to get a rough idea on the distribution of customers in each age group.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ss1_20</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">20</span><span class="p">)]</span>
+<span class="n">ss21_40</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">21</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">40</span><span class="p">)]</span>
+<span class="n">ss41_60</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">41</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">60</span><span class="p">)]</span>
+<span class="n">ss61_80</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">80</span><span class="p">)]</span>
+<span class="n">ss81_100</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">81</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">)]</span>
+
+<span class="n">ssx</span> <span class="o">=</span> <span class="p">[</span><span class="s">"1-20"</span><span class="p">,</span> <span class="s">"21-40"</span><span class="p">,</span> <span class="s">"41-60"</span><span class="p">,</span> <span class="s">"61-80"</span><span class="p">,</span> <span class="s">"81-100"</span><span class="p">]</span>
+<span class="n">ssy</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ss1_20</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ss21_40</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ss41_60</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ss61_80</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ss81_100</span><span class="o">.</span><span class="n">values</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">ssx</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ssy</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s">"nipy_spectral_r"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Spending Scores"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Score"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"Number of Customer Having the Score"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_25_0.png" alt="png" /></p>
+
+<p>Here, we will be trying to analyze a crucial facet viz. thats the number of customers according to their spending habit.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ai0_30</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">)]</span>
+<span class="n">ai31_60</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">60</span><span class="p">)]</span>
+<span class="n">ai61_90</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">61</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">)]</span>
+<span class="n">ai91_120</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">91</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">120</span><span class="p">)]</span>
+<span class="n">ai121_150</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">121</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">150</span><span class="p">)]</span>
+
+<span class="n">aix</span> <span class="o">=</span> <span class="p">[</span><span class="s">"$ 0 - 30,000"</span><span class="p">,</span> <span class="s">"$ 30,001 - 60,000"</span><span class="p">,</span> <span class="s">"$ 60,001 - 90,000"</span><span class="p">,</span> <span class="s">"$ 90,001 - 120,000"</span><span class="p">,</span> <span class="s">"$ 120,001 - 150,000"</span><span class="p">]</span>
+<span class="n">aiy</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ai0_30</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ai31_60</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ai61_90</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ai91_120</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ai121_150</span><span class="o">.</span><span class="n">values</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">aix</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">aiy</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s">"Set2"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Annual Incomes"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Income"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"Number of Customer"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_27_0.png" alt="png" /></p>
+
+<p>Lastly, we have visualized the number of customers againsts their incomes.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># df["Gender"] = df["Gender"].map({'Female' : 0, 'Male' : 1})
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span> <span class="o">=</span><span class="s">"Female"</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span> <span class="o">=</span> <span class="s">"Male"</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">dtypes</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CustomerID</th>
+      <th>Gender</th>
+      <th>Age</th>
+      <th>Annual Income (k$)</th>
+      <th>Spending Score (1-100)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>19</td>
+      <td>15</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>21</td>
+      <td>15</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>0</td>
+      <td>20</td>
+      <td>16</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>0</td>
+      <td>23</td>
+      <td>16</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>31</td>
+      <td>17</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>195</th>
+      <td>196</td>
+      <td>0</td>
+      <td>35</td>
+      <td>120</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <th>196</th>
+      <td>197</td>
+      <td>0</td>
+      <td>45</td>
+      <td>126</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <th>197</th>
+      <td>198</td>
+      <td>1</td>
+      <td>32</td>
+      <td>126</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <th>198</th>
+      <td>199</td>
+      <td>1</td>
+      <td>32</td>
+      <td>137</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>199</th>
+      <td>200</td>
+      <td>1</td>
+      <td>30</td>
+      <td>137</td>
+      <td>83</td>
+    </tr>
+  </tbody>
+</table>
+<p>200 rows × 5 columns</p>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="n">wcss</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">):</span>
+    <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s">"k-means++"</span><span class="p">)</span>
+    <span class="n">kmeans</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">wcss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kmeans</span><span class="o">.</span><span class="n">inertia_</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>    
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span><span class="n">wcss</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">"red"</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span><span class="s">"8"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"K Value"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"WCSS"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_30_0.png" alt="png" /></p>
+
+<p>Now, We’ve plotted Within Cluster Sum Of Squares (WCSS) against the the number of clusters (K Value) to figure out the optimal number of clusters value. WCSS measures sum of distances of observations from their cluster centroids which is given by the below formula.</p>
+
+<p>where Yi is centroid for observation Xi. The main goal is to maximize number of clusters and in limiting case each data point becomes its own cluster centroid.</p>
+
+<blockquote>
+  <p>Ignore if too technical</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">"label"</span><span class="p">]</span> <span class="o">=</span> <span class="n">clusters</span>
+
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+ 
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s">'3d'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s">'blue'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s">'red'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">2</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">2</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s">'green'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">3</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">3</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">3</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s">'orange'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">4</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Annual Income (k$)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">4</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">"Spending Score (1-100)"</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="mi">4</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s">'purple'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">185</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Age"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"Annual Income (k$)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s">'Spending Score (1-100)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_32_0.png" alt="png" /></p>
+
+<p>Finally, coming to the result of all these shenanigans.
+We have made a 3D plot to visualize the spending score of the customers with their annual income.</p>
+
+<p>The data points are separated into 5 classes which are represented in different colours as shown in the 3D plot.</p>
+
+<p>Handing this projection to a well consultant or marketing team will help you achieve wonders!</p>
+
+<p>This gives us a concrete analysis and visualization to better understand out customers and in turn increase the revenue of the company</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## Thanks 
+</span></code></pre></div></div>
+
+:ET

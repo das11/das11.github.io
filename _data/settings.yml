@@ -1,0 +1,303 @@
+#-------------------------------
+# General Site Settings
+
+title: Kabir Das - Developer
+# logo : Kabir Das
+email: kabird1106@gmail.com
+phone: +91 88767 21208
+address: Guwahati, Assam, India
+
+menu:
+- {name: About, link: '/about/'}
+- {name: Blog, link: '/blog/'}
+- {name: Portfolio, link: '/portfolio/'}
+- {name: Contact, link: '/contact/'}
+
+
+#-------------------------------
+# Google Analytics Section
+
+# Analytics helps you understand who visits your website.
+# Learn more at: http://support.google.com/analytics/answer/1008065
+
+# NOTE: If you want to use Google Analytics for basic web tracking: Just uncomment and enter your UA-Code here.
+
+google-analytics: # UA-XXXXXX-X
+
+
+#-------------------------------
+# Comment Section (Disqus)
+
+disqus-identifier: # Add your shortname for Disqus Comment. For example mr-brown
+
+
+#-------------------------------
+# Hero Section
+
+hero:
+  hero-title: Hi! I’m <br> Kabir, <br> Developer
+
+social:
+- {icon: "ti-github", link: "https://github.com/das11"}
+- {icon: "ti-instagram", link: "https://instagram.com/_kabirdas"}
+- {icon: "ti-linkedin", link: "https://www.linkedin.com/in/kabir-das-764274a1/"}
+- {icon: "ti-facebook", link: "https://facebook.com/kdasecho"}
+
+
+#-------------------------------
+# About (Section and Page)
+
+# About Section
+blurb:
+  I'm a developer with a demonstrated history of working in the technology industry. Skilled in Python, openCV, Laravel, Android, Firebase, Ionic and C++ currently focusing on Computer Vision.
+
+blurb-btn-link: '/about'
+blurb-btn-name: know more
+
+
+# About Page
+
+# Work Process Section
+work-process:
+  - title : "Research and Plan"
+    icon : "assets/images/icons/plan.png"
+    # content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    
+  - title : "Design and Develop"
+    icon : "assets/images/icons/design.png"
+    # content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    
+  - title : "Deliver"
+    icon : "assets/images/icons/print.png"
+    # content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+
+# My Team Section
+# team:
+#   - title : "Jack Schenziwe"
+#     image : "assets/images/team/member-1.png"
+#     designation : "Project Manager"
+    
+#   - title : "Julias Carlie"
+#     image : "assets/images/team/member-2.png"
+#     designation : "Web Developer"
+    
+#   - title : "John Doe"
+#     image : "assets/images/team/member-3.png"
+#     designation : "Designer"
+
+
+#-------------------------------
+# Skills Section
+
+skills-title: Skills
+skills:
+- {name: openCV, color: '#fdb157', value: '70%'}
+- {name: Laravel, color: '#9473e6', value: '90%'}
+- {name: Python, color: '#bdecf6', value: '85%'}
+- {name: Android, color: '#0d588c', value: '70%'}
+- {name: Git, color: '#ffbcaa', value: '95%'}
+- {name: nGinx, color: '#27096a', value: '75%'}
+- {name: React, color: '#fdb157', value: '70%'}
+- {name: node JS, color: '#ffbcaa', value: '55%'}
+- {name: Ionic, color: '#f03091', value: '70%'}
+
+
+#-------------------------------
+# Exprerience Section
+
+experience-title: Experience
+experience:
+- {name: Junior Full-stack Developer, icon: 'icon-1.png', date: 'Sep 2017 - Feb 2018', organization: 'Arsaviva Technologies'}
+- {name: Full-stack Developer, icon: 'icon-2.png', date: 'Mar 2018 - Aug 2018', organization: 'One & Zero Marketing'}
+- {name: Technical Consultant, icon: 'icon-1.png', date: 'Dec 2019 - Present', organization: 'Blindspot Media'}
+- {name: CTO, icon: 'icon-3.png', date: 'Sep 2019 - Present', organization: 'Cipher Studios'}
+
+
+#-------------------------------
+# Education Section
+
+education-title: Education
+education:
+- {name: Secondary School Certificate, date: '2012', organization: 'Don Bosco School'}
+- {name: Higher Secondary Certificate, date: '2015', organization: 'Don Bosco School'}
+- {name: Bachelors in Technology, CS, date: '2019', organization: 'Royal Global Universty'}
+
+
+#-------------------------------
+# Services Section
+
+services-title: Services
+services:
+- {
+    name: Mobile App Development,
+    icon: ti-mobile,
+    description: 'Android, iOS',
+    active: # Add true to select section
+  }
+- {
+    name: Web Developemt,
+    icon: ti-server,
+    description: 'PWA (Progressive Web Apps), CRMs, ERPs, Utility Dashboards, Landing Pages',
+    active: true # Add true to select section
+  }
+- {
+    name: Computer Vision,
+    icon: ti-eye,
+    description: 'Specialized solutions built with OpenCV2',
+    active: # Add true to select section
+  }
+  # - {
+  #   name: Prototype Sprinting,
+  #   icon: ti-plug,
+  #   description: 'A 7-week design and development sprint to acheive initial validation of ideas',
+  #   active: # Add true to select section
+  # }
+
+
+
+#-------------------------------
+# Portfolio (Section and Page)
+
+# Portfolio Home Section
+portfolio-home-items:
+  - image : "assets/images/portfolio/logo1.jpg"
+    url: "http://jaatrimitra.com/"
+    
+  - image : "assets/images/portfolio/logo14.png"
+    url: "https://neer.ai"
+    
+  - image : "assets/images/portfolio/logo7.jpg"
+    url: "https://www.facebook.com/pages/category/Business-Center/7coworks-217174269175355/"
+    
+  - image : "assets/images/portfolio/logo9.jpg"
+    url: "https://www.jeffreygroup.com/"
+    
+  - image : "assets/images/portfolio/logo12.jpg"
+    url: ""
+
+  - image : "assets/images/portfolio/logo15.jpg"
+    url: "https://github.com/das11/Object-Motion-Tracking"
+    
+  - image : "assets/images/portfolio/logo16.png"
+    url: "https://github.com/das11/Locus_Reverb"
+
+# Portfolio Page
+portfolio-label:
+- {
+    title : "Web",
+    type : "web"
+  }
+- {
+    title : "Mobile",
+    type : "mobile"
+  }
+- {
+    title : "Computer Vision",
+    type : "computervision"
+  }
+
+portfolio-items:
+  - image : "assets/images/portfolio/logo1.jpg"
+    url: "http://jaatrimitra.com/"
+    portfolio-type:
+     - type: "web"
+    
+  - image : "assets/images/portfolio/logo14.png"
+    url: "https://neer.ai"
+    portfolio-type:
+     - type: "web"
+    
+  - image : "assets/images/portfolio/logo7.jpg"
+    url: "https://www.facebook.com/pages/category/Business-Center/7coworks-217174269175355/"
+    portfolio-type:
+     - type: "web"
+    
+  - image : "assets/images/portfolio/logo9.jpg"
+    url: "https://www.jeffreygroup.com/"
+    portfolio-type:
+     - type: "web"
+    
+  - image : "assets/images/portfolio/logo12.jpg"
+    url: ""
+    portfolio-type:
+     - type: "web"
+
+  - image : "assets/images/portfolio/logo15.jpg"
+    url: "https://github.com/das11/Object-Motion-Tracking"
+    portfolio-type:
+     - type: "computervision"
+    
+  - image : "assets/images/portfolio/logo16.png"
+    url: "https://github.com/das11/Locus_Reverb"
+    portfolio-type:
+     - type: "mobile"
+
+
+#-------------------------------
+# Testimonials Section
+
+testimonial-items:
+  - name: "Eva Doe"
+    image: "assets/images/testimonial/client-1.png"
+    designation : "CEO, Founder"
+    content : "Will Be Added Soon"
+
+
+#-------------------------------
+# Client Slider Section
+
+client-slider-items:
+  - logo: "assets/images/clients-logo/logo1.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo2.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo3.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo4.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo5.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo6.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo7.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo8.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo9.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo10.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo11.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo12.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo13.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo14.png"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo15.jpg"
+    url: "#"
+    
+  - logo: "assets/images/clients-logo/logo16.png"
+    url: "#"
+
+#-------------------------------
+# Contact Section
+
+contact-title: Contact Info
+contact-email: kabird1196@gmail.com
