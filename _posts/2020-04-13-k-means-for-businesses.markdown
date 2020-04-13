@@ -150,7 +150,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_17_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_17_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 I've tried a simple visualization with the age groups to get a gist of where we might be headed !
@@ -167,7 +167,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_19_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_19_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 I've tried making a basic visualization in the distribution ranges between Income and Spending score
@@ -182,7 +182,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_21_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_21_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 And while we're at it, try and give the "Feminists" out there something to bash on me about.
@@ -208,7 +208,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_23_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_23_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 Here, we are trying to get a rough idea on the distribution of customers in each age group.
@@ -233,7 +233,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_25_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_25_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 Here, we will be trying to analyze a crucial facet viz. thats the number of customers according to their spending habit.
@@ -258,7 +258,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_27_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_27_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 Lastly, we have visualized the number of customers againsts their incomes.
@@ -414,7 +414,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_30_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_30_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 Now, We've plotted Within Cluster Sum Of Squares (WCSS) against the the number of clusters (K Value) to figure out the optimal number of clusters value. WCSS measures sum of distances of observations from their cluster centroids which is given by the below formula.
@@ -449,7 +449,7 @@ plt.show()
 ```
 
 
-![png]({{site.baseurl}}/assets/images/blog/output_32_0.png)
+![png]({{site.baseurl}}/assets/images/blog/output_32_0.png){:class="img-fluid rounded float-left mr-5 mb-4"}
 
 
 Finally, coming to the result of all these shenanigans.
