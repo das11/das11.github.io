@@ -1,0 +1,209 @@
+I"�M<p>Take a look at the MARVEL logo below. you can probably figure out the most dominant colors in a second.
+We cleary see Black, Red &amp; White</p>
+
+<p><img src="/assets/images/blog/output_24_0_2.png" alt="test1.png" /></p>
+
+<p>It’s pretty easy for a human mind to pick these out
+But what if we wanted to write an automated script to take out the dominant colors from any imgage ? Sounds cool right ?</p>
+
+<p>So thats what we’re going to do today.</p>
+
+<p>We will be using an algorithm called as the K-Means algorithm to automatically detect the dominant colors in the image.</p>
+
+<h3 id="what-is-k-means-algorithm-">What is K-Means algorithm ?</h3>
+
+<p>Our goal is to partition N data points into K clusters. Each of the N data points will be assigned to a cluster with the nearest mean. The mean of each cluster is called its “centroid” or “center”.</p>
+
+<p>Applying k-means will yield K separate clusters of the original n data points. Data points inside a particular cluster are considered to be “more similar” to each other than data points that belong to other clusters.</p>
+
+<p>In our case, we will be clustering the pixel intensities of a RGB image. Given a MxN size image, we thus have MxN pixels, each consisting of three components: Red, Green, and Blue respectively.</p>
+
+<p>We will treat these MxN pixels as our data points and cluster them using k-means.</p>
+
+<p>Pixels that belong to a given cluster will be more similar in color than pixels belonging to a separate cluster.</p>
+
+<p>The only facet we need to keep in mind is that we will need to provide the number of clusters, K ahead of time</p>
+
+<h3 id="the-code">The code</h3>
+
+<p>We will directly jump into the code now. I’ll try and explain the steps as we go through</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plot</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">helper</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+</code></pre></div></div>
+
+<p>We have imported all the dependencies needed for our project today</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">########################
+</span><span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="c1">########################
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      0%|          | 0/100 [00:00&lt;?, ?it/s][A
+</code></pre></div></div>
+
+<p>This is just the run timer so that we can check on the efficiency at the end. As you can see, it shows 0% as of now</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ap</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+<span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">"-i"</span><span class="p">,</span> <span class="s">"--image"</span><span class="p">,</span> <span class="n">required</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="s">"/Users/Interface/Coding 2/CV/color_clustering_kmeans/test3.jpeg"</span><span class="p">)</span>
+<span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">"-c"</span><span class="p">,</span> <span class="s">"--clusters"</span><span class="p">,</span> <span class="n">required</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">parse_args</span><span class="p">())</span>
+</code></pre></div></div>
+
+<p>We have added the CLI(commmand line) argument parser.
+Now we can send the arguments directly at the cli while running the script.</p>
+
+<p>This is completely optional and I’ll add the values inline for the sake of this article.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># image = cv2.imread(args["image"])
+</span><span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">"/Users/Interface/Coding 2/CV/color_clustering_kmeans/test1.png"</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+
+<span class="c1">########################
+</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1">########################
+</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">"off"</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">);</span>
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     30%|███       | 30/100 [02:27&lt;05:21,  4.59s/it]
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_13_1_2.png" alt="png" /></p>
+
+<p>Here, we have fetched the image and converted that to RGB color channel.
+An important point to note here is that, openCV and most other image processing or Computer Vision frameworks take images in BGR channel and not RGB</p>
+
+<p><img src="output_25_0_2.png" alt="BGRvsRGB" /></p>
+
+<p>Now, an image is basically MxN matrix of pixels.
+We are simply re-shaping our NumPy array to be a list of RGB pixels. So that we can run our algorithm on the image</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">########################
+</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="c1">########################
+</span>
+<span class="c1"># clt = KMeans(n_clusters = args["clusters"])
+</span><span class="n">clt</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">clt</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+<span class="c1">########################
+</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="c1">########################
+</span></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    110it [03:15,  1.87s/it]                        
+</code></pre></div></div>
+
+<p>We we’re using the scikit-learn implementation of the K-Means algorithm. Scikit-learn takes care of most of the heavy lifting.
+On calling fit(), it returns the clusters of data points or basically color intensity in this</p>
+
+<p>But, we do need to define some helper functions to help us display the dominant colors of the image.
+So, let’s open up a new file and name it helper.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="n">maxc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">centroid_histogram</span><span class="p">(</span><span class="n">clt</span><span class="p">)</span> <span class="p">:</span>
+
+        <span class="n">clusters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">clusters</span><span class="p">)</span>
+
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">hist</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">"float"</span><span class="p">)</span>
+        <span class="n">hist</span> <span class="o">/=</span> <span class="n">hist</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">hist</span>
+
+<span class="k">def</span> <span class="nf">plot_colors</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">centroids</span><span class="p">)</span> <span class="p">:</span>
+
+        <span class="n">bar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s">"uint8"</span><span class="p">)</span>
+        <span class="n">startx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">percent</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">centroids</span><span class="p">)</span> <span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">percent</span><span class="p">)</span>
+                <span class="n">maxc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">percent</span><span class="p">)</span>
+                <span class="n">endx</span> <span class="o">=</span> <span class="n">startx</span> <span class="o">+</span> <span class="p">(</span><span class="n">percent</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">bar</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">startx</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">endx</span><span class="p">),</span> <span class="mi">50</span><span class="p">),</span> <span class="n">color</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">"uint8"</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">startx</span> <span class="o">=</span> <span class="n">endx</span>
+
+        <span class="n">plot_max</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">bar</span>
+
+<span class="k">def</span> <span class="nf">plot_max</span><span class="p">()</span> <span class="p">:</span>
+
+        <span class="n">maxbar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s">"uint8"</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">maxc</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">maxbar</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">),</span> <span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">maxbar</span>
+</code></pre></div></div>
+
+<p>In the first function, we take the number of clusters and then create a Histogram based on the number of pixels assigned to each cluster</p>
+
+<p>In the second function, we send 2 parameters - the histogram returned from the first function and then a list of all centroids returned by the K-Means algorithm
+We calculate the average percentage of each color assigned to each color. Which gives us a percentage breakdown of the dominant colors</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hist</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">centroid_histogram</span><span class="p">(</span><span class="n">clt</span><span class="p">)</span>
+<span class="n">bar</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">plot_colors</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">clt</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span>
+<span class="n">maxbar</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">plot_max</span><span class="p">()</span>
+
+<span class="c1">########################
+</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="c1">########################
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    140it [03:33,  1.67s/it]
+
+    0.1871031746031746
+    0.6826190476190476
+    0.13027777777777777
+</code></pre></div></div>
+
+<p>Now, we have glued everything together since the helper functions are done</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">"off"</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+
+<span class="n">p3</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">"off"</span><span class="p">)</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">maxbar</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blog/output_23_0_2.png" alt="png" /></p>
+
+<p>We then simply show the plots with the image.
+Clearly Black is the most dominant one</p>
+
+<p>If you’d like to run it through it CLI, all you need to do is -</p>
+
+<p><code class="highlighter-rouge">python k-means_clustering.py --image test3.jpeg --clusters 4</code></p>
+
+<p>This is a sample illustration for the cli with 4 clusters</p>
+
+<p><img src="/assets/images/blog/output_26_0_2.png" alt="Screen%20Shot%202020-04-12%20at%201.29.20%20PM.png" class="img-fluid rounded float-left mr-5 mb-4" />
+<img src="/assets/images/blog/output_27_0_2.png" alt="Screen%20Shot%202020-04-12%20at%201.29.38%20PM.png" class="img-fluid rounded float-left mr-5 mb-4" /></p>
+
+<p>So there you have it!
+We have successfully used openCV and Python to cluster RGB pixels and extract the most dominant colors in an image.</p>
+
+<p>This is just an illustration of this amazing algorithm, do let me know what you guys come up with!</p>
+
+<blockquote>
+  <p>Thanks for reading</p>
+</blockquote>
+
+:ET

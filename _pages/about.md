@@ -1,12 +1,12 @@
 ---
 layout: about
 title: About Me
-author: 
+author: Kabir Das
 image: assets/images/about/author.png
 signature: assets/images/about/signature.png
 ---
 
-Developer with a demonstrated history of working in the computer software industry. Skilled in Python, Android, Firebase, Ionic and C++ with experience working on Computer Vision.
+I'm a developer with a demonstrated history of working in the technology industry. Skilled in Python, openCV, Laravel, Android, Firebase, Ionic and C++ currently focusing on Computer Vision.
 
 I am driven by the conendrum of visual perception and its underlying meaning through technology.
 
